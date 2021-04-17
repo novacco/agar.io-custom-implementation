@@ -19,7 +19,6 @@ logger = logging.getLogger('server.py')
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
 PORT = 5555
-
 BALL_RADIUS = 5
 START_RADIUS = 7
 
@@ -75,6 +74,8 @@ def with_ball_collision_checking(players, balls) -> None:
 
 
 def players_collision_checking(players) -> None:
+    a=5
+    b=10
     pass
 
 
