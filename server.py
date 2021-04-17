@@ -87,5 +87,6 @@ def start_location(players) -> tuple:
 
 
 def thread_for_players(conn, _id) -> None:
-    pa
+    pass
+
 
