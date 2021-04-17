@@ -74,8 +74,6 @@ def with_ball_collision_checking(players, balls) -> None:
 
 
 def players_collision_checking(players) -> None:
-    a=5
-    b=10
     pass
 
 
