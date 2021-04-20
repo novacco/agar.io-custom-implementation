@@ -1,8 +1,10 @@
 import socket
 import _pickle as pickle
-from server import IP, PORT
 import logging
 import logging.config
+
+IP = ""
+PORT = 5555
 
 # creating logger
 logging.config.fileConfig('logging.conf')
