@@ -74,15 +74,52 @@ def with_ball_collision_checking(players, balls) -> None:
 
 
 def players_collision_checking(players) -> None:
-    pass
+    sorted_players = sorted(players, key=lambda x: players[x]["score"])
+    for x, p1 in enumerate(sorted_players):
+        for p2 in sorted_players[x+1:]:
+            p1x = players[p1]["x"]
+            p1y = players[p1]["y"]
+            p2x = players[p2]["x"]
+            p2y = players[p2]["y"]
+
+            distance = math.sqrt((p1x - p2x)**2 + (p1y-p2y)**2)
+            if distance < players[p2]["score"] - players[p1]["score"] * 0.8:
+                score = math.sqrt(players[p2]["score"]**2 + players[p1]["score"]**2)
+                logger.info(f'{players[p2]["name"]} ate {players[p1]["name"]} and gained {score} points')
+                players[p2]["score"] = score
+                players[p1]["score"] = 0
+                players[p1]["x"], players[p1]["y"] = start_location(players)
 
 
 def create_balls(balls, n) -> None:
-    pass
+    for x in range(n):
+        while True:
+            stop = True
+            x = random.randrange(0, WIDTH)
+            y = random.randrange(0, HEIGHT)
+            for player in players:
+                p = players[player]
+                distance = math.sqrt((x - p["x"])**2 + (y - p["y"])**2)
+                if distance <= START_RADIUS + p["score"]:
+                    stop = False
+            if stop:
+                break
+        balls.append((x, y, random.choice(colors)))
 
 
 def start_location(players) -> tuple:
-    pass
+    while True:
+        stop = True
+        x = random.randrange(0, WIDTH)
+        y = random.randrange(0, HEIGHT)
+        for player in players:
+            p = players[player]
+            distance = math.sqrt((x - p["x"]) ** 2 + (y - p["y"]) ** 2)
+            if distance <= START_RADIUS + p["score"]:
+                stop = False
+        if stop:
+            break
+    return x, y
 
 
 def thread_for_players(conn, _id) -> None:
