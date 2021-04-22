@@ -137,6 +137,7 @@ def new_player(conn, _id) -> None:
     name = data.decode("utf-8")
     logger.info(f"{name} connected")
 
+    logger.error(current_id)
     color = colors[current_id]
     x, y = start_location(players)
     players[current_id] = {"x": x, "y": y, "color": color, "score": 0, "name": name}
