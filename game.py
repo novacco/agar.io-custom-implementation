@@ -1,5 +1,4 @@
 import contextlib
-
 with contextlib.redirect_stdout(None):
     import pygame as pg
 from client import Network
@@ -66,4 +65,64 @@ def redraw_window(players, balls, game_time, score):
     WIN.blit(scr, (10, 15 + scr.get_height()))
 
 
+def game(name):
+    global players
+
+    server = Network()
+    current_id = server.connect(name)
+    balls, players, game_time = server.send("get")
+
+    clock = pg.time.Clock()
+
+    run = True
+    while run:
+        clock.tick(30)
+        p = players[current_id]
+        velocity = START_VELOCITY - round(p["score"] / 12)
+        if velocity < 1:
+            velocity = 1
+
+        keys = pg.key.get_pressed()
+        if keys[pg.K_a]:
+            if p["x"] - velocity - PLAYER_RADIUS - p["score"] >= 0:
+                p["x"] -= velocity
+        if keys[pg.K_d]:
+            if p["x"] + velocity + PLAYER_RADIUS + p["score"] <= WIDTH:
+                p["x"] += velocity
+        if keys[pg.K_w]:
+            if p["y"] - velocity - PLAYER_RADIUS - p["score"] >= 0:
+                p["y"] -= velocity
+        if keys[pg.K_s]:
+            if p["y"] + velocity + PLAYER_RADIUS + p["score"] <= HEIGHT:
+                p["y"] += velocity
+
+        data = f'move {p["x"]} {p["y"]}'
+        balls, players, game_time = server.send(data)
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                run = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    run = False
+        redraw_window(players, balls, game_time, p["score"])
+        pg.display.update()
+
+    server.disconnect()
+    pg.quit()
+    quit()
+
+
+while True:
+    name = input("Write down your nickname:")
+    if 0 < len(name) < 20:
+        break
+    else:
+        print("Nickname must be between 1 and 19 chars")
+
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
 WIN = pg.display.set_mode((WIDTH, HEIGHT))
+pg.display.set_caption(f"Agar.IO implementation {WIDTH}x{HEIGHT}")
+
+game(name)
