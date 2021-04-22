@@ -125,15 +125,21 @@ def start_location(players) -> tuple:
 
 
 def new_player(conn, _id) -> None:
-    global connections, game_time, nxt, start, players, balls
+    """
+
+    :param conn: ip address
+    :param _id: int
+    """
+    global connections, players, balls, game_time, nxt, start
     current_id = _id
 
     data = conn.recv(16)
     name = data.decode("utf-8")
     logger.info(f"{name} connected")
 
+    logger.error(current_id)
     color = colors[current_id]
-    x, y = start_location()
+    x, y = start_location(players)
     players[current_id] = {"x": x, "y": y, "color": color, "score": 0, "name": name}
 
     conn.send(str.encode(str(current_id)))
@@ -141,7 +147,7 @@ def new_player(conn, _id) -> None:
     while True:
         if start:
             game_time = round(time.time() - start_time)
-            if game_time > ROUND_TIME:
+            if game_time >= ROUND_TIME:
                 start = False
             else:
                 if game_time // MASS_LOSS_TIME == nxt:
@@ -151,6 +157,7 @@ def new_player(conn, _id) -> None:
         try:
             data = conn.recv(32)
             if not data:
+                logger.error(f"DATA from {name} not collected")
                 break
 
             data = data.decode("utf-8")
@@ -187,10 +194,10 @@ def new_player(conn, _id) -> None:
 
         time.sleep(0.001)
 
-        logger.info(f"{name}(id = {current_id}) disconnected")
-        connections -= 1
-        del players[current_id]
-        conn.close()
+    logger.info(f"{name}(id = {current_id}) disconnected")
+    connections -= 1
+    del players[current_id]
+    conn.close()
 
 
 create_balls(balls, random.randrange(220, 270))
@@ -208,7 +215,7 @@ while True:
         logger.info("Host connected, game starts")
 
     connections += 1
-    start_new_thread(new_player, (host, address))
+    start_new_thread(new_player, (host, _id))
     _id += 1
 
 logger.info("Server is shutting down")
