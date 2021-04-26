@@ -1,7 +1,5 @@
 import socket
 import _pickle as pickle
-from server import IP, PORT
-import logging
 import logging.config
 
 # creating logger
@@ -14,8 +12,8 @@ logger = logging.getLogger('server.py')
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = IP
-        self.port = PORT
+        self.host = "26.105.227.61"
+        self.port = 5555
         self.address = (self.host, self.port)
 
     def connect(self, name) -> int:
