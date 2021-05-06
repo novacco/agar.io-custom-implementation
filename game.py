@@ -6,6 +6,7 @@ import os
 import random
 import datetime
 import logging.config
+from login import login_window
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('game.py')
@@ -113,16 +114,10 @@ def game(name):
     quit()
 
 
-while True:
-    name = input("Write down your nickname:")
-    if 0 < len(name) < 20:
-        break
-    else:
-        print("Nickname must be between 1 and 19 chars")
 
-
+LOGIN = pg.display.set_mode((WIDTH, HEIGHT))
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
 WIN = pg.display.set_mode((WIDTH, HEIGHT))
 pg.display.set_caption(f"Agar.IO implementation {WIDTH}x{HEIGHT}")
 
-game(name)
+game(login_window())
