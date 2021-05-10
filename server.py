@@ -93,7 +93,7 @@ def players_collision_checking(players) -> None:
                 players[p1]["x"], players[p1]["y"] = start_location(players)
 
 
-def create_balls(balls, n) -> None:
+def create_balls(balls, n) -> list:
     for x in range(n):
         while True:
             stop = True
@@ -107,6 +107,7 @@ def create_balls(balls, n) -> None:
             if stop:
                 break
         balls.append((x, y, random.choice(colors)))
+    return balls
 
 
 def start_location(players) -> tuple:
@@ -155,7 +156,7 @@ def new_player(conn, _id) -> None:
                     realse_players_mass(players)
                     logger.info(f"{name} started playing")
         try:
-            data = conn.recv(32)
+            data = conn.recv(16)
             if not data:
                 logger.error(f"DATA from {name} not collected")
                 break
@@ -174,7 +175,7 @@ def new_player(conn, _id) -> None:
 
                 if len(balls) < 200:
                     number = random.randrange(100, 200)
-                    create_balls(balls, number)
+                    balls = create_balls(balls, number)
                     logger.info(f"Created {number} balls")
 
                 send_data = pickle.dumps((balls, players, game_time))
@@ -200,7 +201,7 @@ def new_player(conn, _id) -> None:
     conn.close()
 
 
-create_balls(balls, random.randrange(220, 270))
+balls = create_balls(balls, random.randrange(220, 270))
 
 logger.info("Map has been generated")
 logger.info("Waiting for connections")
@@ -209,10 +210,9 @@ while True:
     host, address = S.accept()
     logger.info(f"New connection from {address}")
 
-    if address[0] == IP and not start:
-        start = True
-        start_time = time.time()
-        logger.info("Host connected, game starts")
+    start = True
+    start_time = time.time()
+    logger.info("Host connected, game starts")
 
     connections += 1
     start_new_thread(new_player, (host, _id))
