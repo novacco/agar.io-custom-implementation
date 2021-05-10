@@ -17,7 +17,7 @@ logger = logging.getLogger('server.py')
 
 # constants
 HOST = socket.gethostname()
-IP = socket.gethostbyname(HOST)
+IP = socket.gethostbyname('')
 PORT = 5555
 BALL_RADIUS = 5
 START_RADIUS = 7

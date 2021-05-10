@@ -39,6 +39,8 @@ def convert_time(time):
 def redraw_window(players, balls, game_time, score):
     WIN.fill((255, 255, 255))
 
+    if type(balls) != list and type(players) != list:
+        print("chuj")
     for ball in balls:
         pg.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
 
@@ -70,7 +72,7 @@ def game(name):
 
     server = Network()
     current_id = server.connect(name)
-    balls, players, game_time = server.send("get")
+    balls, players, game_time, *_ = server.send("get")
 
     clock = pg.time.Clock()
 
@@ -97,7 +99,7 @@ def game(name):
                 p["y"] += velocity
 
         data = f'move {p["x"]} {p["y"]}'
-        balls, players, game_time = server.send(data)
+        balls, players, game_time, *_ = server.send(data)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
