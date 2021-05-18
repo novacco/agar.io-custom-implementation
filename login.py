@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+import os
 
 pg.init()
 
@@ -7,14 +8,14 @@ NAME_FONT = pg.font.SysFont("Arial", 20)
 PROMPT_FONT = pg.font.SysFont("Arial", 40)
 
 clock = pg.time.Clock()
-
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
 
 def login_window():
     """
     creates a pop up window asking player for a name
     :return:
     """
-    LOGIN = pg.display.set_mode((300, 200))
+    LOGIN = pg.display.set_mode((300, 200), pg.RESIZABLE)
     name = ''
 
     rect = pg.Rect(50, 100, 200, 32)
@@ -24,17 +25,23 @@ def login_window():
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
-                        return name
+                    pg.display.set_mode((1600, 830))
+                    return name
                 elif event.key == pg.K_BACKSPACE:
                     name = name[:-1]
-                elif event.key == pg.K_ESCAPE or event.type == pg.QUIT:
+                elif event.key == pg.K_ESCAPE:
                     pg.display.quit()
                     pg.quit()
                     sys.exit()
                 else:
                     name += event.unicode
-            if event.type == pg.MOUSEBUTTONDOWN:
+            elif event.type == pg.QUIT:
+                pg.display.quit()
+                pg.quit()
+                sys.exit()
+            elif event.type == pg.MOUSEBUTTONDOWN:
                 if 100 <= pg.mouse.get_pos()[0] <= 200 and 150 <= pg.mouse.get_pos()[1] <= 182:
+                    pg.display.set_mode((1600,830))
                     return name
         LOGIN.fill((189, 189, 189))
         pg.draw.rect(LOGIN, pg.Color('white'), rect, 2)

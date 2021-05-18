@@ -7,7 +7,7 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('server.py')
 
 
-# TODO: descirption of class and functions inside
+# TODO: description of class and functions inside
 
 class Network:
     def __init__(self):
