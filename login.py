@@ -10,10 +10,10 @@ PROMPT_FONT = pg.font.SysFont("Arial", 40)
 clock = pg.time.Clock()
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
 
+
 def login_window():
     """
-    creates a pop up window asking player for a name
-    :return:
+    Creates a pop up window asking player for a name.
     """
     LOGIN = pg.display.set_mode((300, 200), pg.RESIZABLE)
     name = ''

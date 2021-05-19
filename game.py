@@ -3,7 +3,6 @@ with contextlib.redirect_stdout(None):
     import pygame as pg
 from client import Network
 import os
-import random
 import datetime
 import logging.config
 from login import login_window
@@ -30,14 +29,26 @@ players = {}
 balls = []
 
 
-def convert_time(time):
+def convert_time(time) -> str:
+    """
+    Function converts time in seconds to nicely formatted time.
+    :param time: int, number of seconds
+    :return: str of formatted time
+    """
     if type(time) is not int:
         logger.error(f"type of time must be INT, returning error")
         return "ERR"
     return str(datetime.timedelta(seconds=time))
 
 
-def redraw_window(players, balls, game_time, score):
+def redraw_window(players, balls, game_time, score) -> None:
+    """
+    Function redraws balls, players and scoreboard.
+    :param players: dictionary of players with all required data
+    :param balls: list of balls
+    :param game_time:
+    :param score: int of player's points
+    """
     WIN.fill((255, 255, 255))
     if type(balls) != list and type(players) != list:
         quit()
@@ -67,7 +78,11 @@ def redraw_window(players, balls, game_time, score):
     WIN.blit(scr, (10, 15 + scr.get_height()))
 
 
-def game(name):
+def game(name) -> None:
+    """
+    Main function, opens connection between server and player, handles movement and redrawing
+    :param name: str, name of player
+    """
     global players
     server = Network()
     current_id = server.connect(name)
@@ -111,7 +126,6 @@ def game(name):
     server.disconnect()
     pg.quit()
     quit()
-
 
 
 LOGIN = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE)

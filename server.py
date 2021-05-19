@@ -4,7 +4,6 @@ import math
 import random
 from _thread import *
 import _pickle as pickle
-import logging
 import logging.config
 
 # creating sockets
@@ -17,7 +16,7 @@ logger = logging.getLogger('server.py')
 
 # constants
 HOST = socket.gethostname()
-IP = socket.gethostbyname('')
+IP = "there goes your local IP"
 PORT = 5555
 BALL_RADIUS = 5
 START_RADIUS = 7
@@ -38,7 +37,6 @@ S.listen()
 logger.info(f"running with local ip {IP}")
 
 # dynamic variables
-# TODO: list of colors
 players = {}
 balls = []
 connections = 0
@@ -53,13 +51,22 @@ nxt = 1
 
 
 def realse_players_mass(players) -> None:
+    """
+    Function reduces player's size & score (handicap).
+    :param players: dictionary of player's data
+    """
     for player in players:
         p = players[player]
         if p["score"] > 8:
-            p["score"] = math.floor(p["score"] * 0.9)
+            p["score"] = math.floor(p["score"] * 0.95)
 
 
 def with_ball_collision_checking(players, balls) -> None:
+    """
+    Function checks if there is collision between player and any ball.
+    :param players: dictionary of player's data
+    :param balls: list of balls' coords
+    """
     for player in players:
         p = players[player]
         x = p['x']
@@ -76,6 +83,10 @@ def with_ball_collision_checking(players, balls) -> None:
 
 
 def players_collision_checking(players) -> None:
+    """
+    Function checks if there is collision between players.
+    :param players: dictionary of player's data
+    """
     sorted_players = sorted(players, key=lambda x: players[x]["score"])
     for x, p1 in enumerate(sorted_players):
         for p2 in sorted_players[x + 1:]:
@@ -94,6 +105,12 @@ def players_collision_checking(players) -> None:
 
 
 def create_balls(balls, n) -> list:
+    """
+    Function creates specified number of balls.
+    :param balls: list of balls
+    :param n: int, how many balls to create
+    :return: new list of balls
+    """
     for x in range(n):
         while True:
             stop = True
@@ -111,6 +128,11 @@ def create_balls(balls, n) -> list:
 
 
 def start_location(players) -> tuple:
+    """
+    Function generates starting location for player.
+    :param players: dictionary of player's data
+    :return: tuple of new player's x & y
+    """
     while True:
         stop = True
         x = random.randrange(0, WIDTH)
@@ -127,9 +149,9 @@ def start_location(players) -> tuple:
 
 def new_player(conn, _id) -> None:
     """
-
-    :param conn: ip address
-    :param _id: int
+    Function that is being threaded, handles new player's connection and sending data between server and player.
+    :param conn: connection object, specified in sockets documentation
+    :param _id: int, id of player
     """
     global connections, players, balls, game_time, nxt, start
     current_id = _id
