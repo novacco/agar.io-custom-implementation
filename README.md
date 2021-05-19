@@ -2,7 +2,7 @@
 
 
 
-Custom, simple implementation of the popular game [agar.io](http://agar.io/) with some original features.
+Custom, simple implementation of the popular game [agar.io](http://agar.io/).
 
 ## Game mechanics
 
@@ -10,11 +10,3 @@ Custom, simple implementation of the popular game [agar.io](http://agar.io/) wit
 
 - Each round lasts 5 minutes
 - Each player loses mass at proportional rate to their size
-
-## Features
-
-
-
-- Running on local network
-- Kill cam
-- Custom skin on the player's mass
